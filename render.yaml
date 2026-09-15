@@ -1,0 +1,36 @@
+# Render blueprint for the EMISSIQ backend.
+# Deploy: Render dashboard -> New -> Blueprint -> point at this repo.
+# Vercel can only host the Next.js frontend; the FastAPI service needs a
+# long-lived process for the WebSocket feed and the demo replay loop.
+
+services:
+  - type: web
+    name: emissiq-api
+    runtime: python
+    rootDir: services/api
+    buildCommand: pip install -r requirements.txt
+    startCommand: >
+      python -m emissiq.db.init &&
+      python -m emissiq.db.seed &&
+      uvicorn emissiq.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: emissiq-db
+          property: connectionString
+      - key: AI_PROVIDER_ORDER
+        value: groq,scripted
+      - key: GROQ_API_KEY
+        sync: false   # set in the Render dashboard
+      - key: GAS_PRICE_OMR_PER_MMBTU
+        value: "1.500"
+      - key: DISPLAY_CURRENCY
+        value: OMR
+
+databases:
+  - name: emissiq-db
+    plan: free
+    postgresMajorVersion: "16"

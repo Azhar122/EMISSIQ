@@ -1,0 +1,28 @@
+# secrets / local config
+.env
+.env.local
+*.local
+
+# python
+services/api/.venv/
+__pycache__/
+*.pyc
+*.db
+*.sqlite
+
+# node / next
+apps/web/node_modules/
+apps/web/.next/
+apps/web/out/
+apps/web/.vercel/
+npm-debug.log*
+
+# editor / os
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# large source assets not needed at runtime
+*.pptx
+apps/web/tsconfig.tsbuildinfo

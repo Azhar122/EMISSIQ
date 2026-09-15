@@ -1,0 +1,20 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: emissiq-db
+    environment:
+      POSTGRES_USER: emissiq
+      POSTGRES_PASSWORD: emissiq
+      POSTGRES_DB: emissiq
+    ports:
+      - "5433:5432"
+    volumes:
+      - emissiq-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U emissiq -d emissiq"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  emissiq-pgdata:

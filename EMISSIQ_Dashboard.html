@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMISSIQ — Dashboard</title>
+<style>
+  :root{
+    --green: #1D4533;
+    --green-light: #26543F;
+    --green-hover: #2E624A;
+    --cream: #F7EAE0;
+    --cream-2: #FFFFFF;
+    --peach: #F9D2BA;
+    --umber: #5E3122;
+    --text-dark: #24352C;
+    --text-muted: #6E7C74;
+    --text-onGreen: #F7EAE0;
+    --text-onGreen-muted: #A9C0B3;
+    --border: #E4D9CC;
+    --red: #C4453F;
+    --red-bg: #FBE9E7;
+    --orange: #C97A2E;
+    --orange-bg: #FBEEDF;
+    --amber: #B08A2E;
+    --amber-bg: #FBF3DE;
+    --normal-green: #3B7A57;
+    --normal-bg: #E6F1EA;
+    --blue: #33689C;
+    --blue-bg: #E7EFF6;
+    --grey: #8C8C84;
+    --grey-bg: #EEEDE7;
+    --radius: 14px;
+    --shadow: 0 1px 3px rgba(29,69,51,0.08), 0 1px 2px rgba(29,69,51,0.06);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: inherit; text-decoration:none; }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    background: var(--green);
+    height: 72px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 0 28px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{
+    width:38px; height:38px; border-radius:10px;
+    background: var(--umber);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .brand-name{
+    font-size:20px; font-weight:700; color:#fff; letter-spacing:0.5px;
+  }
+  .topbar-right{ display:flex; align-items:center; gap:18px; }
+  .lang-toggle{ display:flex; align-items:center; gap:10px; font-size:14px; }
+  .lang-toggle .active{ color:#fff; font-weight:600; }
+  .lang-toggle .inactive{ color: var(--text-onGreen-muted); cursor:pointer; }
+  .lang-sep{ color: var(--text-onGreen-muted); }
+  .icon-btn{
+    width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--text-onGreen-muted);
+    background: transparent;
+  }
+  .rtl-btn{
+    display:flex; align-items:center; gap:8px;
+    background: var(--peach); color: var(--umber);
+    padding:8px 16px; border-radius:20px;
+    font-size:13px; font-weight:600; cursor:pointer; border:none;
+  }
+
+  /* ---------- Shell layout ---------- */
+  .shell{ display:flex; min-height: calc(100vh - 72px); }
+
+  .sidebar{
+    width: 250px; flex-shrink:0;
+    background: var(--green);
+    padding: 22px 14px 22px;
+    display:flex; flex-direction:column;
+  }
+  .nav{ display:flex; flex-direction:column; gap:2px; }
+  .nav-item{
+    display:flex; align-items:center; gap:12px;
+    padding:11px 14px; border-radius:10px;
+    color: var(--text-onGreen-muted);
+    font-size:14.5px; font-weight:500;
+    cursor:pointer;
+  }
+  .nav-item:hover{ background: rgba(255,255,255,0.05); color:#fff; }
+  .nav-item.active{ background: var(--green-hover); color:#fff; }
+  .nav-item svg{ flex-shrink:0; }
+
+  .sidebar-footer{
+    margin-top:auto;
+    border-radius: var(--radius);
+    overflow:hidden;
+    background: var(--green-light);
+  }
+  .sidebar-illustration{
+    height:110px;
+    background: linear-gradient(180deg, #234d3a 0%, #1a3d2c 100%);
+    display:flex; align-items:flex-end; justify-content:center;
+    padding-bottom:6px;
+  }
+  .sidebar-footer-text{ padding:14px 16px 16px; }
+  .sidebar-footer-brand{ color:#fff; font-weight:700; font-size:15px; margin-bottom:4px; }
+  .sidebar-footer-tag{ color: var(--text-onGreen-muted); font-size:12px; line-height:1.5; margin-bottom:12px; }
+  .oman-flag{ display:flex; align-items:center; gap:8px; }
+  .flag-swatch{ width:22px; height:15px; border-radius:2px; overflow:hidden; display:flex; flex-direction:column; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);}
+  .flag-swatch div:nth-child(1){ background:#DA291C; height:100%; width:8px; float:left; }
+  .flag-swatch div:nth-child(2){ flex:1; display:flex; flex-direction:column; }
+  .flag-swatch div:nth-child(2) span{ flex:1; }
+  .flag-swatch div:nth-child(2) span:nth-child(1){ background:#fff; }
+  .flag-swatch div:nth-child(2) span:nth-child(2){ background:#DA291C; }
+  .flag-swatch div:nth-child(2) span:nth-child(3){ background:#1D4533; }
+
+  /* ---------- Main content ---------- */
+  .main{ flex:1; padding: 30px 34px 50px; min-width:0; }
+
+  .greeting{ display:flex; align-items:flex-start; gap:14px; margin-bottom:26px; }
+  .greeting svg{ margin-top:6px; flex-shrink:0; }
+  .greeting h1{ margin:0; font-size:28px; font-weight:700; color: var(--green); }
+  .greeting p{ margin:4px 0 0; color: var(--text-muted); font-size:14.5px; }
+
+  /* ---------- Stat cards ---------- */
+  .stat-grid{
+    display:flex; gap:16px; margin-bottom:24px;
+  }
+  .stat-card{
+    background:#fff; border-radius: var(--radius); box-shadow: var(--shadow);
+    padding:18px; display:flex; flex-direction:column; gap:14px;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .stat-icon{
+    width:44px; height:44px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .stat-label{ font-size:13px; color: var(--text-muted); font-weight:500; }
+  .stat-value{ font-size:24px; font-weight:700; color: var(--text-dark); margin-top:2px; }
+  .stat-caption{ font-size:12.5px; font-weight:600; }
+
+  /* ---------- Two column row ---------- */
+  .row-2col{ display:flex; gap:18px; margin-bottom:24px; align-items:stretch; }
+  .row-2col > .panel:first-child{ flex: 0 0 34%; }
+  .row-2col > .panel:last-child{ flex: 1 1 0; min-width:0; }
+  .panel{
+    background:#fff; border-radius: var(--radius); box-shadow: var(--shadow);
+    padding:20px 22px;
+  }
+  .panel-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .panel-title{ font-size:17px; font-weight:700; color: var(--text-dark); }
+  .panel-link{ font-size:13px; font-weight:600; color: var(--green); display:flex; align-items:center; gap:4px; }
+
+  /* Priority action card */
+  .alert-card{
+    background: var(--red-bg); border-radius:12px; border:1px solid #F3CFCB;
+    padding:18px 18px 16px;
+  }
+  .alert-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .badge-critical{
+    background: var(--red); color:#fff; font-size:11px; font-weight:700; letter-spacing:0.4px;
+    padding:4px 10px; border-radius:6px;
+  }
+  .alert-time{ font-size:12px; color: var(--text-muted); }
+  .alert-title{ font-size:19px; font-weight:700; color: var(--text-dark); margin:0 0 4px; }
+  .alert-location{ font-size:13px; color: var(--text-muted); display:flex; align-items:center; gap:5px; margin-bottom:16px; }
+
+  .alert-stats{
+    display:flex; gap:10px;
+    background:#fff; border-radius:10px; padding:14px; margin-bottom:16px;
+  }
+  .alert-stats > div{ flex:1 1 0; min-width:0; }
+  .alert-stat-label{ font-size:11.5px; color: var(--text-muted); margin-bottom:4px; }
+  .alert-stat-value{ font-size:17px; font-weight:700; color: var(--text-dark); }
+  .alert-stat-sub{ font-size:11px; font-weight:600; margin-top:3px; }
+  .progress-track{ height:5px; background:#EAE6DF; border-radius:4px; margin-top:6px; overflow:hidden; }
+  .progress-fill{ height:100%; background: var(--normal-green); border-radius:4px; }
+  .wind-value{ display:flex; align-items:center; gap:5px; }
+
+  .alert-actions{ display:flex; align-items:center; justify-content:space-between; }
+  .btn-take-action{
+    background: var(--red); color:#fff; border:none; border-radius:9px;
+    padding:11px 18px; font-size:14px; font-weight:600; display:flex; align-items:center; gap:6px;
+    cursor:pointer;
+  }
+  .link-view-details{ font-size:13px; font-weight:600; color: var(--red); text-decoration:underline; }
+
+  /* Live monitoring */
+  .monitor-canvas{
+    position:relative; background: #F1E9DE; border-radius:12px;
+    height: 300px; overflow:hidden; border:1px solid var(--border);
+  }
+  .wind-box{
+    position:absolute; top:14px; left:14px; background:#fff; border-radius:10px;
+    padding:10px 14px; box-shadow: var(--shadow); display:flex; align-items:center; gap:10px; z-index:3;
+  }
+  .wind-box .wind-label{ font-size:11.5px; color: var(--text-muted); }
+  .wind-box .wind-detail{ font-size:13px; font-weight:700; color: var(--text-dark); }
+
+  .legend-box{
+    position:absolute; top:14px; right:14px; background:#fff; border-radius:10px;
+    padding:10px 14px; box-shadow: var(--shadow); z-index:3; font-size:12px;
+  }
+  .legend-row{ display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .legend-row:last-child{ margin-bottom:0; }
+  .legend-dot{ width:8px; height:8px; border-radius:50%; }
+
+  .zoom-controls{
+    position:absolute; bottom:14px; right:14px; background:#fff; border-radius:10px;
+    box-shadow: var(--shadow); display:flex; flex-direction:column; z-index:3; overflow:hidden;
+  }
+  .zoom-controls button{
+    width:30px; height:30px; border:none; background:#fff; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; color: var(--text-muted);
+    border-bottom:1px solid var(--border);
+  }
+  .zoom-controls button:last-child{ border-bottom:none; }
+
+  .equip-node{ position:absolute; display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .equip-dot{ width:9px; height:9px; border-radius:50%; }
+  .equip-label{ font-size:11px; font-weight:600; color: var(--text-dark); background:rgba(255,255,255,0.85); padding:2px 6px; border-radius:5px; white-space:nowrap; }
+  .critical-pulse{
+    width: 26px; height: 26px; border-radius:50%;
+    background: var(--red); display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 0 0 6px rgba(196,69,63,0.18);
+    flex-shrink: 0;
+  }
+
+  /* ---------- Events table ---------- */
+  .table-panel{ background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); padding:20px 22px 8px; }
+  table{ width:100%; border-collapse:collapse; }
+  thead th{
+    text-align:left; font-size:12px; color: var(--text-muted); font-weight:600;
+    padding:0 10px 12px; border-bottom:1px solid var(--border);
+  }
+  tbody td{
+    padding:14px 10px; font-size:13.5px; color: var(--text-dark);
+    border-bottom:1px solid var(--border);
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  .cell-strong{ font-weight:700; }
+  .badge{
+    display:inline-block; padding:4px 11px; border-radius:20px; font-size:12px; font-weight:600;
+  }
+  .dots-btn{ color: var(--text-muted); cursor:pointer; }
+
+  /* ---------- Footer ---------- */
+  .footer-note{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-top:26px; padding-top:22px; border-top:1px solid var(--border);
+    color: var(--text-muted); font-size:13px;
+  }
+  .footer-vision{ display:flex; flex-direction:column; align-items:flex-end; line-height:1.2; margin-left:10px; }
+  .footer-vision .ar{ font-size:12px; color: var(--green); font-weight:700; }
+  .footer-vision .en{ font-size:11px; color: var(--text-muted); letter-spacing:1px; }
+
+  @media (max-width: 1180px){
+    .stat-grid{ flex-wrap:wrap; }
+    .stat-card{ flex: 1 1 30%; }
+    .row-2col{ flex-direction:column; }
+  }
+  @media (max-width: 760px){
+    .sidebar{ display:none; }
+    .stat-card{ flex: 1 1 45%; }
+  }
+
+  /* ---------- Page switching ---------- */
+  .page{ display:none; }
+  .page.active{ display:block; }
+  .page-header{ margin-bottom:22px; }
+  .page-header h1{ margin:0; font-size:24px; font-weight:700; color: var(--green); }
+  .page-header p{ margin:4px 0 0; color: var(--text-muted); font-size:14px; }
+  .page-header-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:22px; }
+
+  /* ---------- Buttons ---------- */
+  .btn-primary{
+    background: var(--green); color:#fff; border:none; border-radius:9px;
+    padding:10px 18px; font-size:13.5px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+  }
+  .btn-primary:hover{ background: var(--green-hover); }
+
+  /* ---------- Tabs ---------- */
+  .tabs{ display:flex; gap:6px; margin-bottom:18px; background:#fff; padding:5px; border-radius:11px; box-shadow: var(--shadow); width:fit-content; }
+  .tab{ padding:9px 18px; border-radius:8px; font-size:13.5px; font-weight:600; color: var(--text-muted); cursor:pointer; }
+  .tab.active{ background: var(--green); color:#fff; }
+
+  /* ---------- Filter bar ---------- */
+  .filter-bar{ display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+  .filter-input, .filter-select{
+    border:1px solid var(--border); background:#fff; border-radius:9px;
+    padding:9px 14px; font-size:13.5px; color: var(--text-dark); font-family:inherit;
+  }
+  .filter-input{ flex:1 1 220px; min-width:180px; }
+  .filter-input:focus, .filter-select:focus{ outline:2px solid var(--peach); border-color: var(--umber); }
+
+  /* ---------- KPI cards (Analytics) ---------- */
+  .kpi-grid{ display:flex; gap:16px; margin-bottom:20px; }
+  .kpi-card{ flex:1 1 0; background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); padding:18px 20px; }
+  .kpi-label{ font-size:13px; color: var(--text-muted); font-weight:500; margin-bottom:8px; }
+  .kpi-value{ font-size:26px; font-weight:700; color: var(--text-dark); }
+  .kpi-delta{ font-size:12.5px; font-weight:600; margin-top:6px; }
+
+  .chart-row{ display:flex; gap:18px; margin-bottom:18px; align-items:stretch; }
+  .chart-panel{ flex:1 1 0; background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); padding:20px 22px; min-width:0; }
+  .chart-panel h3{ margin:0 0 16px; font-size:15.5px; font-weight:700; color: var(--text-dark); }
+  .legend-inline{ display:flex; gap:16px; margin-top:14px; flex-wrap:wrap; justify-content:center; }
+  .legend-inline span{ display:flex; align-items:center; gap:6px; font-size:12px; color: var(--text-muted); }
+  .legend-inline i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  /* ---------- Priority Center ---------- */
+  .priority-list{ display:flex; flex-direction:column; gap:14px; }
+  .priority-item{
+    background:#fff; border-radius: var(--radius); box-shadow: var(--shadow);
+    padding:18px 20px; display:flex; align-items:center; gap:18px;
+  }
+  .rank-badge{
+    width:40px; height:40px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px;
+    background: var(--cream); color: var(--umber);
+  }
+  .priority-item.rank-1 .rank-badge{ background: var(--red); color:#fff; }
+  .priority-item.rank-2 .rank-badge{ background: var(--orange); color:#fff; }
+  .priority-item.rank-3 .rank-badge{ background: var(--amber); color:#fff; }
+  .priority-main{ flex:1 1 0; min-width:0; }
+  .priority-title-row{ display:flex; align-items:center; gap:10px; margin-bottom:3px; }
+  .priority-title{ font-size:15.5px; font-weight:700; color: var(--text-dark); }
+  .priority-sub{ font-size:12.5px; color: var(--text-muted); }
+  .priority-metrics{ display:flex; gap:26px; flex-shrink:0; }
+  .priority-metric{ min-width:88px; }
+  .priority-metric{ text-align:center; }
+  .priority-metric-val{ font-size:15px; font-weight:700; color: var(--text-dark); }
+  .priority-metric-label{ font-size:11px; color: var(--text-muted); margin-top:2px; }
+
+  /* ---------- Facilities ---------- */
+  .facility-grid{ display:flex; flex-wrap:wrap; gap:18px; }
+  .facility-card{
+    flex: 1 1 290px; background:#fff; border-radius: var(--radius); box-shadow: var(--shadow);
+    padding:20px; min-width:260px;
+  }
+  .facility-card-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .facility-icon{ width:42px; height:42px; border-radius:11px; background: var(--normal-bg); display:flex; align-items:center; justify-content:center; }
+  .facility-name{ font-size:16px; font-weight:700; color: var(--text-dark); margin:0 0 2px; }
+  .facility-loc{ font-size:12.5px; color: var(--text-muted); }
+  .facility-stats{ display:flex; gap:18px; margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
+  .facility-stats > div{ flex:1 1 0; min-width:0; }
+  .facility-stat-val{ font-size:17px; font-weight:700; color: var(--text-dark); }
+  .facility-stat-label{ font-size:11.5px; color: var(--text-muted); margin-top:2px; }
+
+  /* ---------- Data Sources ---------- */
+  .datasource-list{ display:flex; flex-direction:column; gap:12px; }
+  .datasource-item{
+    background:#fff; border-radius: var(--radius); box-shadow: var(--shadow);
+    padding:18px 20px; display:flex; align-items:center; gap:16px;
+  }
+  .ds-icon{ width:44px; height:44px; border-radius:11px; background: var(--cream); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .ds-main{ flex:1 1 0; min-width:0; }
+  .ds-name{ font-size:15px; font-weight:700; color: var(--text-dark); }
+  .ds-desc{ font-size:12.5px; color: var(--text-muted); margin-top:2px; }
+  .ds-sync{ font-size:12px; color: var(--text-muted); flex-shrink:0; text-align:right; min-width:120px; }
+
+  .toggle{ position:relative; width:42px; height:24px; border-radius:12px; background: var(--border); cursor:pointer; flex-shrink:0; transition: background .15s; }
+  .toggle.on{ background: var(--normal-green); }
+  .toggle-knob{ position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition: left .15s; box-shadow:0 1px 2px rgba(0,0,0,0.2); }
+  .toggle.on .toggle-knob{ left:21px; }
+
+  /* ---------- Pagination ---------- */
+  .pagination{ display:flex; align-items:center; justify-content:space-between; padding:16px 4px 6px; font-size:13px; color: var(--text-muted); }
+  .page-btns{ display:flex; gap:6px; }
+  .page-btn{ width:30px; height:30px; border-radius:7px; border:1px solid var(--border); background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; color: var(--text-dark); font-size:13px; }
+  .page-btn.active{ background: var(--green); color:#fff; border-color: var(--green); }
+
+  @media (max-width: 1180px){
+    .kpi-grid{ flex-wrap:wrap; } .kpi-card{ flex:1 1 45%; }
+    .chart-row{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9D2BA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+    </div>
+    <span class="brand-name">EMISSIQ</span>
+  </div>
+  <div class="topbar-right">
+    <div class="lang-toggle">
+      <span class="active" id="lang-en">EN</span>
+      <span class="lang-sep">|</span>
+      <span class="inactive" id="lang-ar">العربية</span>
+    </div>
+    <div class="icon-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9s1.3-6.5 3.8-9Z"/></svg>
+    </div>
+    <button class="rtl-btn" id="rtl-toggle">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+
+      RTL
+    </button>
+  </div>
+</div>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <nav class="nav" id="sidebar-nav">
+      <div class="nav-item active" data-page="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-page="live-monitoring">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="2"/><path d="M8.5 8.5a5 5 0 0 0 0 7"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M5.5 5.5a9 9 0 0 0 0 13"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        Live Monitoring
+      </div>
+      <div class="nav-item" data-page="methane-events">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10.3 3.4 2.6 17a1.8 1.8 0 0 0 1.6 2.7h15.6a1.8 1.8 0 0 0 1.6-2.7L13.7 3.4a1.8 1.8 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 16.5h.01"/></svg>
+        Methane Events
+      </div>
+      <div class="nav-item" data-page="priority-center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2.5l2.9 5.9 6.5.95-4.7 4.6 1.1 6.45L12 17.4l-5.8 3 1.1-6.45-4.7-4.6 6.5-.95Z"/></svg>
+        Priority Center
+      </div>
+      <div class="nav-item" data-page="analytics">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10"/><path d="M11 20V4"/><path d="M18 20v-7"/></svg>
+        Analytics
+      </div>
+      <div class="nav-item" data-page="work-orders">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="6" y="3.5" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3" rx="1"/><path d="M9 11h6M9 15h6"/></svg>
+        Work Orders
+      </div>
+      <div class="nav-item" data-page="facilities">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg>
+        Facilities
+      </div>
+      <div class="nav-item" data-page="data-sources">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5V12c0 1.7 3.6 3 8 3s8-1.3 8-3V5.5"/><path d="M4 12v6.5c0 1.7 3.6 3 8 3s8-1.3 8-3V12"/></svg>
+        Data Sources
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-illustration">
+        <svg width="150" height="80" viewBox="0 0 150 80" fill="none" stroke="rgba(247,234,224,0.55)" stroke-width="1">
+          <rect x="18" y="34" width="10" height="34"/><rect x="34" y="24" width="10" height="44"/>
+          <rect x="50" y="40" width="10" height="28"/><rect x="70" y="18" width="4" height="50"/>
+          <rect x="78" y="18" width="4" height="50"/><circle cx="72" cy="16" r="4"/><circle cx="80" cy="16" r="4"/>
+          <rect x="96" y="30" width="14" height="38" rx="2"/><rect x="116" y="30" width="14" height="38" rx="2"/>
+        </svg>
+      </div>
+      <div class="sidebar-footer-text">
+        <div class="sidebar-footer-brand">EMISSIQ</div>
+        <div class="sidebar-footer-tag">Methane Intelligence for a Cleaner Oman</div>
+        <div class="oman-flag">
+          <span class="flag-swatch"><div></div><div><span></span><span></span><span></span></div></span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <section class="page active" id="page-dashboard">
+    <div class="greeting">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#D9A441" stroke-width="1.8"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></svg>
+      <div>
+        <h1>Good morning, Ahmed</h1>
+        <p>Monitor emissions. Prioritize actions. Drive impact.</p>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--normal-bg)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--normal-green)" stroke-width="1.8"><path d="M4 21V8l6-4 6 4v13"/><path d="M14 21V11l6 3v7"/><path d="M8 10h.01M8 14h.01M8 18h.01"/></svg>
+        </div>
+        <div>
+          <div class="stat-label">Active Facilities</div>
+          <div class="stat-value">12</div>
+        </div>
+        <div class="stat-caption" style="color:var(--normal-green)">All systems operational</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--orange-bg)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="1.8"><path d="M7 17a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 9a4 4 0 0 1-.5 8H7Z"/></svg>
+        </div>
+        <div>
+          <div class="stat-label">Methane Events</div>
+          <div class="stat-value">18</div>
+        </div>
+        <div class="stat-caption" style="color:var(--orange)">+4 vs yesterday</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--red-bg)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8"><path d="M10.3 3.4 2.6 17a1.8 1.8 0 0 0 1.6 2.7h15.6a1.8 1.8 0 0 0 1.6-2.7L13.7 3.4a1.8 1.8 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 16.5h.01"/></svg>
+        </div>
+        <div>
+          <div class="stat-label">Critical Events</div>
+          <div class="stat-value">3</div>
+        </div>
+        <div class="stat-caption" style="color:var(--red)">Require immediate action</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--normal-bg)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--normal-green)" stroke-width="1.8"><path d="M7 17a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 9a4 4 0 0 1-.5 8H7Z"/></svg>
+        </div>
+        <div>
+          <div class="stat-label">Estimated Methane Loss</div>
+          <div class="stat-value">428 kg</div>
+        </div>
+        <div class="stat-caption" style="color:var(--normal-green)">Today</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--orange-bg)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 6.5v11M15.2 9.2c0-1.5-1.4-2.4-3.2-2.4-2 0-3.4 1-3.4 2.5 0 3.3 6.6 1.6 6.6 4.9 0 1.6-1.5 2.6-3.4 2.6-1.9 0-3.4-1-3.4-2.5"/></svg>
+        </div>
+        <div>
+          <div class="stat-label">Estimated Gas Loss</div>
+          <div class="stat-value">$2,840</div>
+        </div>
+        <div class="stat-caption" style="color:var(--normal-green)">Today</div>
+      </div>
+    </div>
+
+    <!-- PRIORITY ACTIONS + LIVE MONITORING -->
+    <div class="row-2col">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Priority Actions</span>
+        </div>
+        <div class="alert-card">
+          <div class="alert-top">
+            <span class="badge-critical">CRITICAL</span>
+            <span class="alert-time">Detected: 10:24 AM</span>
+          </div>
+          <div class="alert-title">Compressor Station 03</div>
+          <div class="alert-location">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.3"/></svg>
+            Fahud Field &nbsp;•&nbsp; Block 6
+          </div>
+
+          <div class="alert-stats">
+            <div>
+              <div class="alert-stat-label">Estimated CH₄ Emission</div>
+              <div class="alert-stat-value">28.7 kg/hr</div>
+              <div class="alert-stat-sub" style="color:var(--red)">High emission rate detected</div>
+            </div>
+            <div>
+              <div class="alert-stat-label">Confidence Score</div>
+              <div class="alert-stat-value">92%</div>
+              <div class="progress-track"><div class="progress-fill" style="width:92%"></div></div>
+            </div>
+            <div>
+              <div class="alert-stat-label">Wind Direction</div>
+              <div class="alert-stat-value wind-value">
+                NW 315°
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2"><path d="M17 7 7 17M7 7v10h10"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert-actions">
+            <button class="btn-take-action">
+              Take Action
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+            <a class="link-view-details" href="#">View Details</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Live Monitoring</span>
+          <a class="panel-link" href="#">View All
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M14 5h5v5"/><path d="M19 5 10 14"/><path d="M8 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+          </a>
+        </div>
+
+        <div class="monitor-canvas">
+          <div class="wind-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2"><path d="M17 7 7 17M7 7v10h10"/></svg>
+            <div>
+              <div class="wind-label">Wind</div>
+              <div class="wind-detail">NW 315° · 14 km/h</div>
+            </div>
+          </div>
+
+          <div class="legend-box">
+            <div class="legend-row"><span class="legend-dot" style="background:var(--normal-green)"></span>Normal</div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--amber)"></span>Medium</div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--orange)"></span>High</div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--red)"></span>Critical</div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--grey)"></span>Unknown</div>
+          </div>
+
+          <div class="zoom-controls">
+            <button><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 5v14M5 12h14"/></svg></button>
+            <button><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M5 12h14"/></svg></button>
+            <button><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M9 3H4v5M15 3h5v5M9 21H4v-5M15 21h5v-5"/></svg></button>
+          </div>
+
+          <!-- schematic pipes -->
+          <svg width="100%" height="100%" viewBox="0 0 700 300" style="position:absolute; top:0; left:0;">
+            <path d="M120 130 H420 M420 130 V220 M280 130 V220 M420 220 H560 M180 220 V130" stroke="#C9BBA9" stroke-width="3" fill="none"/>
+          </svg>
+
+          <div class="equip-node" style="top:39%; left:14.3%; transform:translateX(-50%);">
+            <div class="equip-dot" style="background:var(--normal-green)"></div>
+            <span class="equip-label">Compressor 01</span>
+          </div>
+          <div class="equip-node" style="top:39%; left:35%; transform:translateX(-50%);">
+            <div class="equip-dot" style="background:var(--orange)"></div>
+            <span class="equip-label">Compressor 02</span>
+          </div>
+          <div class="equip-node" style="top:39%; left:57.1%; transform:translateX(-50%);">
+            <div class="critical-pulse">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 9v4"/><path d="M12 16.5h.01"/><path d="M10.3 3.4 2.6 17a1.8 1.8 0 0 0 1.6 2.7h15.6a1.8 1.8 0 0 0 1.6-2.7L13.7 3.4a1.8 1.8 0 0 0-3.4 0Z"/></svg>
+            </div>
+            <span class="equip-label">Compressor 03</span>
+          </div>
+          <div class="equip-node" style="top:39%; left:77.1%; transform:translateX(-50%);">
+            <div class="equip-dot" style="background:var(--normal-green)"></div>
+            <span class="equip-label">Storage Tank 01</span>
+          </div>
+          <div class="equip-node" style="top:39%; left:89.3%; transform:translateX(-50%);">
+            <div class="equip-dot" style="background:var(--amber)"></div>
+            <span class="equip-label">Storage Tank 02</span>
+          </div>
+          <div class="equip-node" style="top:74%; left:24.3%; transform:translateX(-50%);">
+            <div class="equip-dot" style="background:var(--normal-green)"></div>
+            <span class="equip-label">Inlet Separator</span>
+          </div>
+          <div class="equip-node" style="top:74%; left:39.3%; transform:translateX(-50%);">
+            <div class="equip-dot" style="background:var(--orange)"></div>
+            <span class="equip-label">Valve Cluster A</span>
+          </div>
+          <div class="equip-node" style="top:74%; left:59.3%; transform:translateX(-50%);">
+            <div class="equip-dot" style="background:var(--normal-green)"></div>
+            <span class="equip-label">Valve Cluster B</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTS TABLE -->
+    <div class="table-panel">
+      <div class="panel-header">
+        <span class="panel-title">Methane Events</span>
+        <a class="panel-link" href="#">View All Events
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M14 5h5v5"/><path d="M19 5 10 14"/><path d="M8 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+        </a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Event ID</th><th>Location</th><th>CH₄ amount</th><th>Severity</th><th>Status</th><th>Detected At</th><th>Updated At</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cell-strong">EVT-2025-00078</td>
+            <td>Compressor Station 03, Fahud Field</td>
+            <td class="cell-strong">28.7 kg/hr</td>
+            <td><span class="badge" style="background:var(--red-bg); color:var(--red)">Critical</span></td>
+            <td><span class="badge" style="background:var(--red-bg); color:var(--red)">New</span></td>
+            <td>May 20, 2025 10:24 AM</td>
+            <td>May 20, 2025 10:24 AM</td>
+            <td class="dots-btn">•••</td>
+          </tr>
+          <tr>
+            <td class="cell-strong">EVT-2025-00077</td>
+            <td>Storage Tank 02, Nimr Field</td>
+            <td class="cell-strong">12.4 kg/hr</td>
+            <td><span class="badge" style="background:var(--orange-bg); color:var(--orange)">High</span></td>
+            <td><span class="badge" style="background:var(--blue-bg); color:var(--blue)">In Progress</span></td>
+            <td>May 20, 2025 09:15 AM</td>
+            <td>May 20, 2025 09:45 AM</td>
+            <td class="dots-btn">•••</td>
+          </tr>
+          <tr>
+            <td class="cell-strong">EVT-2025-00076</td>
+            <td>Valve Cluster A, Yibal Field</td>
+            <td class="cell-strong">6.8 kg/hr</td>
+            <td><span class="badge" style="background:var(--amber-bg); color:var(--amber)">Medium</span></td>
+            <td><span class="badge" style="background:var(--amber-bg); color:var(--amber)">Investigating</span></td>
+            <td>May 20, 2025 08:47 AM</td>
+            <td>May 20, 2025 09:10 AM</td>
+            <td class="dots-btn">•••</td>
+          </tr>
+          <tr>
+            <td class="cell-strong">EVT-2025-00075</td>
+            <td>Inlet Separator, Fahud Field</td>
+            <td class="cell-strong">2.1 kg/hr</td>
+            <td><span class="badge" style="background:var(--normal-bg); color:var(--normal-green)">Normal</span></td>
+            <td><span class="badge" style="background:var(--grey-bg); color:var(--grey)">Closed</span></td>
+            <td>May 20, 2025 07:30 AM</td>
+            <td>May 20, 2025 08:05 AM</td>
+            <td class="dots-btn">•••</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer-note">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3.4"/></svg>
+      <span>Proudly supporting Oman's Vision 2040 and a sustainable energy future.</span>
+      <div class="footer-vision">
+        <span class="ar">رؤية 2040</span>
+        <span class="en">VISION 2040</span>
+      </div>
+    </div>
+    </section>
+
+    <!-- ============ LIVE MONITORING PAGE ============ -->
+    <section class="page" id="page-live-monitoring">
+      <div class="page-header">
+        <h1>Live Monitoring</h1>
+        <p>Real-time facility and equipment status across the network</p>
+      </div>
+
+      <div class="tabs" id="facility-tabs">
+        <div class="tab active" data-facility="fahud">Fahud Field</div>
+        <div class="tab" data-facility="nimr">Nimr Field</div>
+        <div class="tab" data-facility="yibal">Yibal Field</div>
+      </div>
+
+      <div class="panel" style="margin-bottom:18px;">
+        <div class="panel-header">
+          <span class="panel-title">Facility schematic</span>
+          <a class="panel-link" href="#">Full screen
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M9 3H4v5M15 3h5v5M9 21H4v-5M15 21h5v-5"/></svg>
+          </a>
+        </div>
+        <div class="monitor-canvas" style="height:380px;">
+          <div class="wind-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2"><path d="M17 7 7 17M7 7v10h10"/></svg>
+            <div>
+              <div class="wind-label">Wind</div>
+              <div class="wind-detail">NW 315° · 14 km/h</div>
+            </div>
+          </div>
+          <div class="legend-box">
+            <div class="legend-row"><span class="legend-dot" style="background:var(--normal-green)"></span>Normal</div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--amber)"></span>Medium</div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--orange)"></span>High</div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--red)"></span>Critical</div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--grey)"></span>Unknown</div>
+          </div>
+          <div class="zoom-controls">
+            <button><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 5v14M5 12h14"/></svg></button>
+            <button><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M5 12h14"/></svg></button>
+            <button><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M9 3H4v5M15 3h5v5M9 21H4v-5M15 21h5v-5"/></svg></button>
+          </div>
+          <svg width="100%" height="100%" viewBox="0 0 700 300" style="position:absolute; top:0; left:0;">
+            <path d="M120 130 H420 M420 130 V220 M280 130 V220 M420 220 H560 M180 220 V130" stroke="#C9BBA9" stroke-width="3" fill="none"/>
+          </svg>
+          <div class="equip-node" style="top:39%; left:14.3%; transform:translateX(-50%);"><div class="equip-dot" style="background:var(--normal-green)"></div><span class="equip-label">Compressor 01</span></div>
+          <div class="equip-node" style="top:39%; left:35%; transform:translateX(-50%);"><div class="equip-dot" style="background:var(--orange)"></div><span class="equip-label">Compressor 02</span></div>
+          <div class="equip-node" style="top:39%; left:57.1%; transform:translateX(-50%);"><div class="critical-pulse"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 9v4"/><path d="M12 16.5h.01"/><path d="M10.3 3.4 2.6 17a1.8 1.8 0 0 0 1.6 2.7h15.6a1.8 1.8 0 0 0 1.6-2.7L13.7 3.4a1.8 1.8 0 0 0-3.4 0Z"/></svg></div><span class="equip-label">Compressor 03</span></div>
+          <div class="equip-node" style="top:39%; left:77.1%; transform:translateX(-50%);"><div class="equip-dot" style="background:var(--normal-green)"></div><span class="equip-label">Storage Tank 01</span></div>
+          <div class="equip-node" style="top:39%; left:89.3%; transform:translateX(-50%);"><div class="equip-dot" style="background:var(--amber)"></div><span class="equip-label">Storage Tank 02</span></div>
+          <div class="equip-node" style="top:74%; left:24.3%; transform:translateX(-50%);"><div class="equip-dot" style="background:var(--normal-green)"></div><span class="equip-label">Inlet Separator</span></div>
+          <div class="equip-node" style="top:74%; left:39.3%; transform:translateX(-50%);"><div class="equip-dot" style="background:var(--orange)"></div><span class="equip-label">Valve Cluster A</span></div>
+          <div class="equip-node" style="top:74%; left:59.3%; transform:translateX(-50%);"><div class="equip-dot" style="background:var(--normal-green)"></div><span class="equip-label">Valve Cluster B</span></div>
+        </div>
+      </div>
+
+      <div class="table-panel">
+        <div class="panel-header"><span class="panel-title">Equipment status</span></div>
+        <table>
+          <thead><tr><th>Equipment</th><th>Type</th><th>Status</th><th>Last reading</th><th>Updated</th></tr></thead>
+          <tbody>
+            <tr><td class="cell-strong">Compressor 01</td><td>Compressor</td><td><span class="badge" style="background:var(--normal-bg); color:var(--normal-green)">Normal</span></td><td>0.4 kg/hr</td><td>2 min ago</td></tr>
+            <tr><td class="cell-strong">Compressor 02</td><td>Compressor</td><td><span class="badge" style="background:var(--orange-bg); color:var(--orange)">High</span></td><td>9.1 kg/hr</td><td>2 min ago</td></tr>
+            <tr><td class="cell-strong">Compressor 03</td><td>Compressor</td><td><span class="badge" style="background:var(--red-bg); color:var(--red)">Critical</span></td><td>28.7 kg/hr</td><td>1 min ago</td></tr>
+            <tr><td class="cell-strong">Storage Tank 01</td><td>Storage</td><td><span class="badge" style="background:var(--normal-bg); color:var(--normal-green)">Normal</span></td><td>0.1 kg/hr</td><td>4 min ago</td></tr>
+            <tr><td class="cell-strong">Storage Tank 02</td><td>Storage</td><td><span class="badge" style="background:var(--amber-bg); color:var(--amber)">Medium</span></td><td>3.4 kg/hr</td><td>3 min ago</td></tr>
+            <tr><td class="cell-strong">Inlet Separator</td><td>Separator</td><td><span class="badge" style="background:var(--normal-bg); color:var(--normal-green)">Normal</span></td><td>0.2 kg/hr</td><td>5 min ago</td></tr>
+            <tr><td class="cell-strong">Valve Cluster A</td><td>Valve</td><td><span class="badge" style="background:var(--orange-bg); color:var(--orange)">High</span></td><td>6.8 kg/hr</td><td>3 min ago</td></tr>
+            <tr><td class="cell-strong">Valve Cluster B</td><td>Valve</td><td><span class="badge" style="background:var(--normal-bg); color:var(--normal-green)">Normal</span></td><td>0.3 kg/hr</td><td>4 min ago</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ METHANE EVENTS PAGE ============ -->
+    <section class="page" id="page-methane-events">
+      <div class="page-header">
+        <h1>Methane Events</h1>
+        <p>Full history of detected emission events across all facilities</p>
+      </div>
+
+      <div class="filter-bar">
+        <input class="filter-input" id="events-search" type="text" placeholder="Search by event ID or location...">
+        <select class="filter-select" id="events-severity-filter">
+          <option value="">All severities</option>
+          <option value="Critical">Critical</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Normal">Normal</option>
+        </select>
+        <select class="filter-select" id="events-status-filter">
+          <option value="">All statuses</option>
+          <option value="New">New</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Investigating">Investigating</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+
+      <div class="table-panel">
+        <table>
+          <thead>
+            <tr><th>Event ID</th><th>Location</th><th>CH₄ amount</th><th>Severity</th><th>Status</th><th>Detected At</th><th>Updated At</th><th></th></tr>
+          </thead>
+          <tbody id="events-table-body">
+            <!-- populated by JS -->
+          </tbody>
+        </table>
+        <div class="pagination">
+          <span id="events-count-label">Showing 10 of 10 events</span>
+          <div class="page-btns">
+            <button class="page-btn active">1</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRIORITY CENTER PAGE ============ -->
+    <section class="page" id="page-priority-center">
+      <div class="page-header">
+        <h1>Priority Center</h1>
+        <p>Recommended actions ranked by estimated impact and urgency</p>
+      </div>
+
+      <div class="priority-list">
+        <div class="priority-item rank-1">
+          <div class="rank-badge">1</div>
+          <div class="priority-main">
+            <div class="priority-title-row">
+              <span class="priority-title">Compressor Station 03</span>
+              <span class="badge" style="background:var(--red-bg); color:var(--red)">Critical</span>
+            </div>
+            <div class="priority-sub">Fahud Field · Block 6 · Detected 10:24 AM</div>
+          </div>
+          <div class="priority-metrics">
+            <div class="priority-metric"><div class="priority-metric-val">28.7 kg/hr</div><div class="priority-metric-label">Emission rate</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">$412/day</div><div class="priority-metric-label">Gas value lost</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">92%</div><div class="priority-metric-label">Confidence</div></div>
+          </div>
+          <button class="btn-take-action">Take Action
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <div class="priority-item rank-2">
+          <div class="rank-badge">2</div>
+          <div class="priority-main">
+            <div class="priority-title-row">
+              <span class="priority-title">Storage Tank 02</span>
+              <span class="badge" style="background:var(--orange-bg); color:var(--orange)">High</span>
+            </div>
+            <div class="priority-sub">Nimr Field · Tank Farm 2 · Detected 09:15 AM</div>
+          </div>
+          <div class="priority-metrics">
+            <div class="priority-metric"><div class="priority-metric-val">12.4 kg/hr</div><div class="priority-metric-label">Emission rate</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">$178/day</div><div class="priority-metric-label">Gas value lost</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">87%</div><div class="priority-metric-label">Confidence</div></div>
+          </div>
+          <button class="btn-take-action" style="background:var(--orange)">Take Action
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <div class="priority-item rank-3">
+          <div class="rank-badge">3</div>
+          <div class="priority-main">
+            <div class="priority-title-row">
+              <span class="priority-title">Valve Cluster A</span>
+              <span class="badge" style="background:var(--amber-bg); color:var(--amber)">Medium</span>
+            </div>
+            <div class="priority-sub">Yibal Field · Block 2 · Detected 08:47 AM</div>
+          </div>
+          <div class="priority-metrics">
+            <div class="priority-metric"><div class="priority-metric-val">6.8 kg/hr</div><div class="priority-metric-label">Emission rate</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">$97/day</div><div class="priority-metric-label">Gas value lost</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">81%</div><div class="priority-metric-label">Confidence</div></div>
+          </div>
+          <button class="btn-take-action" style="background:var(--amber)">Take Action
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <div class="priority-item">
+          <div class="rank-badge">4</div>
+          <div class="priority-main">
+            <div class="priority-title-row">
+              <span class="priority-title">Pipeline Junction C</span>
+              <span class="badge" style="background:var(--amber-bg); color:var(--amber)">Medium</span>
+            </div>
+            <div class="priority-sub">Marmul Field · Section 4 · Detected 07:52 AM</div>
+          </div>
+          <div class="priority-metrics">
+            <div class="priority-metric"><div class="priority-metric-val">4.2 kg/hr</div><div class="priority-metric-label">Emission rate</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">$61/day</div><div class="priority-metric-label">Gas value lost</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">76%</div><div class="priority-metric-label">Confidence</div></div>
+          </div>
+          <button class="btn-take-action" style="background:var(--umber)">Take Action
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <div class="priority-item">
+          <div class="rank-badge">5</div>
+          <div class="priority-main">
+            <div class="priority-title-row">
+              <span class="priority-title">Inlet Separator</span>
+              <span class="badge" style="background:var(--normal-bg); color:var(--normal-green)">Normal</span>
+            </div>
+            <div class="priority-sub">Fahud Field · Block 6 · Detected 07:30 AM</div>
+          </div>
+          <div class="priority-metrics">
+            <div class="priority-metric"><div class="priority-metric-val">2.1 kg/hr</div><div class="priority-metric-label">Emission rate</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">$29/day</div><div class="priority-metric-label">Gas value lost</div></div>
+            <div class="priority-metric"><div class="priority-metric-val">95%</div><div class="priority-metric-label">Confidence</div></div>
+          </div>
+          <button class="btn-take-action" style="background:var(--normal-green)">Monitor
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ANALYTICS PAGE ============ -->
+    <section class="page" id="page-analytics">
+      <div class="page-header">
+        <h1>Analytics</h1>
+        <p>Emission trends and performance insights across your network</p>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total methane this month</div>
+          <div class="kpi-value">6.8 t</div>
+          <div class="kpi-delta" style="color:var(--red)">↑ 12% vs last month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Gas value recovered</div>
+          <div class="kpi-value">$41,200</div>
+          <div class="kpi-delta" style="color:var(--normal-green)">↑ 8% vs last month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Avg. time to resolve</div>
+          <div class="kpi-value">6.4 hrs</div>
+          <div class="kpi-delta" style="color:var(--normal-green)">↓ 18% vs last month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Events auto-attributed</div>
+          <div class="kpi-value">94%</div>
+          <div class="kpi-delta" style="color:var(--normal-green)">↑ 3% vs last month</div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-panel">
+          <h3>Daily methane detected (kg)</h3>
+          <svg width="100%" viewBox="0 0 560 220">
+            <line x1="40" y1="20" x2="40" y2="180" stroke="var(--border)" stroke-width="1"/>
+            <line x1="40" y1="180" x2="540" y2="180" stroke="var(--border)" stroke-width="1"/>
+            <polyline fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+              points="60,140 130,120 200,150 270,90 340,100 410,60 480,75"/>
+            <g fill="var(--green)">
+              <circle cx="60" cy="140" r="3.5"/><circle cx="130" cy="120" r="3.5"/><circle cx="200" cy="150" r="3.5"/>
+              <circle cx="270" cy="90" r="3.5"/><circle cx="340" cy="100" r="3.5"/><circle cx="410" cy="60" r="3.5"/><circle cx="480" cy="75" r="3.5"/>
+            </g>
+            <g font-size="11" fill="var(--text-muted)" text-anchor="middle" font-family="inherit">
+              <text x="60" y="198">Mon</text><text x="130" y="198">Tue</text><text x="200" y="198">Wed</text>
+              <text x="270" y="198">Thu</text><text x="340" y="198">Fri</text><text x="410" y="198">Sat</text><text x="480" y="198">Sun</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="chart-panel" style="flex:0 0 300px;">
+          <h3>Events by severity</h3>
+          <svg width="100%" viewBox="0 0 200 200" style="max-width:200px; display:block; margin:0 auto;">
+            <circle r="70" cx="100" cy="100" fill="none" stroke="var(--grey-bg)" stroke-width="26"/>
+            <circle r="70" cx="100" cy="100" fill="none" stroke="var(--red)" stroke-width="26"
+              stroke-dasharray="66 373" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+            <circle r="70" cx="100" cy="100" fill="none" stroke="var(--orange)" stroke-width="26"
+              stroke-dasharray="88 373" stroke-dashoffset="-66" transform="rotate(-90 100 100)"/>
+            <circle r="70" cx="100" cy="100" fill="none" stroke="var(--amber)" stroke-width="26"
+              stroke-dasharray="110 373" stroke-dashoffset="-154" transform="rotate(-90 100 100)"/>
+            <circle r="70" cx="100" cy="100" fill="none" stroke="var(--normal-green)" stroke-width="26"
+              stroke-dasharray="109 373" stroke-dashoffset="-264" transform="rotate(-90 100 100)"/>
+            <text x="100" y="96" text-anchor="middle" font-size="24" font-weight="700" fill="var(--text-dark)" font-family="inherit">18</text>
+            <text x="100" y="115" text-anchor="middle" font-size="11" fill="var(--text-muted)" font-family="inherit">events</text>
+          </svg>
+          <div class="legend-inline">
+            <span><i style="background:var(--red)"></i>Critical (3)</span>
+            <span><i style="background:var(--orange)"></i>High (4)</span>
+            <span><i style="background:var(--amber)"></i>Medium (5)</span>
+            <span><i style="background:var(--normal-green)"></i>Normal (6)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-panel">
+        <h3>Methane detected by facility (kg this month)</h3>
+        <svg width="100%" viewBox="0 0 700 210">
+          <g font-family="inherit">
+            <text x="0" y="24" font-size="12" fill="var(--text-dark)">Fahud Field</text>
+            <rect x="140" y="10" width="480" height="20" rx="4" fill="var(--red-bg)"/>
+            <rect x="140" y="10" width="420" height="20" rx="4" fill="var(--red)"/>
+            <text x="630" y="24" font-size="12" fill="var(--text-dark)" font-weight="600">2,940 kg</text>
+
+            <text x="0" y="64" font-size="12" fill="var(--text-dark)">Nimr Field</text>
+            <rect x="140" y="50" width="480" height="20" rx="4" fill="var(--orange-bg)"/>
+            <rect x="140" y="50" width="300" height="20" rx="4" fill="var(--orange)"/>
+            <text x="630" y="64" font-size="12" fill="var(--text-dark)" font-weight="600">1,860 kg</text>
+
+            <text x="0" y="104" font-size="12" fill="var(--text-dark)">Yibal Field</text>
+            <rect x="140" y="90" width="480" height="20" rx="4" fill="var(--amber-bg)"/>
+            <rect x="140" y="90" width="210" height="20" rx="4" fill="var(--amber)"/>
+            <text x="630" y="104" font-size="12" fill="var(--text-dark)" font-weight="600">1,240 kg</text>
+
+            <text x="0" y="144" font-size="12" fill="var(--text-dark)">Marmul Field</text>
+            <rect x="140" y="130" width="480" height="20" rx="4" fill="var(--normal-bg)"/>
+            <rect x="140" y="130" width="120" height="20" rx="4" fill="var(--normal-green)"/>
+            <text x="630" y="144" font-size="12" fill="var(--text-dark)" font-weight="600">560 kg</text>
+
+            <text x="0" y="184" font-size="12" fill="var(--text-dark)">Qarn Alam</text>
+            <rect x="140" y="170" width="480" height="20" rx="4" fill="var(--normal-bg)"/>
+            <rect x="140" y="170" width="60" height="20" rx="4" fill="var(--normal-green)"/>
+            <text x="630" y="184" font-size="12" fill="var(--text-dark)" font-weight="600">200 kg</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============ WORK ORDERS PAGE ============ -->
+    <section class="page" id="page-work-orders">
+      <div class="page-header-row">
+        <div class="page-header" style="margin-bottom:0;">
+          <h1>Work Orders</h1>
+          <p>Repair and inspection tasks generated from methane events</p>
+        </div>
+        <button class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          New Work Order
+        </button>
+      </div>
+
+      <div class="table-panel">
+        <table>
+          <thead><tr><th>Order ID</th><th>Related Event</th><th>Facility</th><th>Assigned To</th><th>Priority</th><th>Status</th><th>Due Date</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="cell-strong">WO-2025-0142</td><td>EVT-2025-00078</td><td>Fahud Field</td><td>Salim Al-Balushi</td>
+              <td><span class="badge" style="background:var(--red-bg); color:var(--red)">Critical</span></td>
+              <td><span class="badge" style="background:var(--red-bg); color:var(--red)">Open</span></td><td>Today, 6:00 PM</td>
+            </tr>
+            <tr>
+              <td class="cell-strong">WO-2025-0141</td><td>EVT-2025-00077</td><td>Nimr Field</td><td>Fatma Al-Habsi</td>
+              <td><span class="badge" style="background:var(--orange-bg); color:var(--orange)">High</span></td>
+              <td><span class="badge" style="background:var(--blue-bg); color:var(--blue)">In Progress</span></td><td>Tomorrow, 12:00 PM</td>
+            </tr>
+            <tr>
+              <td class="cell-strong">WO-2025-0140</td><td>EVT-2025-00076</td><td>Yibal Field</td><td>Hamed Al-Rashdi</td>
+              <td><span class="badge" style="background:var(--amber-bg); color:var(--amber)">Medium</span></td>
+              <td><span class="badge" style="background:var(--amber-bg); color:var(--amber)">In Progress</span></td><td>May 23, 2025</td>
+            </tr>
+            <tr>
+              <td class="cell-strong">WO-2025-0137</td><td>EVT-2025-00071</td><td>Marmul Field</td><td>Yusra Al-Kindi</td>
+              <td><span class="badge" style="background:var(--amber-bg); color:var(--amber)">Medium</span></td>
+              <td><span class="badge" style="background:var(--red-bg); color:var(--red)">Overdue</span></td><td>May 19, 2025</td>
+            </tr>
+            <tr>
+              <td class="cell-strong">WO-2025-0129</td><td>EVT-2025-00065</td><td>Fahud Field</td><td>Salim Al-Balushi</td>
+              <td><span class="badge" style="background:var(--normal-bg); color:var(--normal-green)">Low</span></td>
+              <td><span class="badge" style="background:var(--grey-bg); color:var(--grey)">Completed</span></td><td>May 15, 2025</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ FACILITIES PAGE ============ -->
+    <section class="page" id="page-facilities">
+      <div class="page-header">
+        <h1>Facilities</h1>
+        <p>All monitored sites across the Sultanate</p>
+      </div>
+
+      <div class="facility-grid" id="facilities-grid">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+    <!-- ============ DATA SOURCES PAGE ============ -->
+    <section class="page" id="page-data-sources">
+      <div class="page-header">
+        <h1>Data Sources</h1>
+        <p>Manage the monitoring feeds and integrations powering EMISSIQ</p>
+      </div>
+
+      <div class="datasource-list" id="datasource-list">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  var rtlBtn = document.getElementById('rtl-toggle');
+  var langEn = document.getElementById('lang-en');
+  var langAr = document.getElementById('lang-ar');
+  var isRtl = false;
+
+  function setDir(rtl){
+    isRtl = rtl;
+    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+    langEn.classList.toggle('active', !rtl);
+    langEn.classList.toggle('inactive', rtl);
+    langAr.classList.toggle('active', rtl);
+    langAr.classList.toggle('inactive', !rtl);
+  }
+
+  rtlBtn.addEventListener('click', function(){ setDir(!isRtl); });
+  langEn.addEventListener('click', function(){ setDir(false); });
+  langAr.addEventListener('click', function(){ setDir(true); });
+
+  /* ---------- Page navigation ---------- */
+  var navItems = document.querySelectorAll('#sidebar-nav .nav-item');
+  var pages = document.querySelectorAll('.page');
+  for (var n = 0; n < navItems.length; n++){
+    navItems[n].addEventListener('click', function(){
+      for (var k = 0; k < navItems.length; k++){ navItems[k].classList.remove('active'); }
+      this.classList.add('active');
+      var target = this.getAttribute('data-page');
+      for (var p = 0; p < pages.length; p++){
+        pages[p].classList.toggle('active', pages[p].id === 'page-' + target);
+      }
+      window.scrollTo(0, 0);
+    });
+  }
+
+  /* ---------- Facility tabs (Live Monitoring page) ---------- */
+  var facilityTabs = document.querySelectorAll('#facility-tabs .tab');
+  for (var ft = 0; ft < facilityTabs.length; ft++){
+    facilityTabs[ft].addEventListener('click', function(){
+      for (var k = 0; k < facilityTabs.length; k++){ facilityTabs[k].classList.remove('active'); }
+      this.classList.add('active');
+    });
+  }
+
+  /* ---------- Methane Events table (with filtering) ---------- */
+  const eventsData = [
+    { id:'EVT-2025-00078', location:'Compressor Station 03, Fahud Field', amount:'28.7 kg/hr', severity:'Critical', status:'New', detected:'May 20, 2025 10:24 AM', updated:'May 20, 2025 10:24 AM' },
+    { id:'EVT-2025-00077', location:'Storage Tank 02, Nimr Field', amount:'12.4 kg/hr', severity:'High', status:'In Progress', detected:'May 20, 2025 09:15 AM', updated:'May 20, 2025 09:45 AM' },
+    { id:'EVT-2025-00076', location:'Valve Cluster A, Yibal Field', amount:'6.8 kg/hr', severity:'Medium', status:'Investigating', detected:'May 20, 2025 08:47 AM', updated:'May 20, 2025 09:10 AM' },
+    { id:'EVT-2025-00075', location:'Inlet Separator, Fahud Field', amount:'2.1 kg/hr', severity:'Normal', status:'Closed', detected:'May 20, 2025 07:30 AM', updated:'May 20, 2025 08:05 AM' },
+    { id:'EVT-2025-00074', location:'Pipeline Junction C, Marmul Field', amount:'4.2 kg/hr', severity:'Medium', status:'In Progress', detected:'May 19, 2025 07:52 PM', updated:'May 19, 2025 08:30 PM' },
+    { id:'EVT-2025-00073', location:'Compressor 02, Fahud Field', amount:'9.1 kg/hr', severity:'High', status:'Investigating', detected:'May 19, 2025 04:12 PM', updated:'May 19, 2025 05:00 PM' },
+    { id:'EVT-2025-00072', location:'Storage Tank 01, Yibal Field', amount:'0.8 kg/hr', severity:'Normal', status:'Closed', detected:'May 19, 2025 02:05 PM', updated:'May 19, 2025 03:00 PM' },
+    { id:'EVT-2025-00071', location:'Valve Cluster B, Marmul Field', amount:'5.6 kg/hr', severity:'Medium', status:'Closed', detected:'May 19, 2025 10:40 AM', updated:'May 19, 2025 01:15 PM' },
+    { id:'EVT-2025-00070', location:'Inlet Separator, Nimr Field', amount:'1.4 kg/hr', severity:'Normal', status:'Closed', detected:'May 19, 2025 08:22 AM', updated:'May 19, 2025 09:00 AM' },
+    { id:'EVT-2025-00069', location:'Compressor 01, Qarn Alam', amount:'3.0 kg/hr', severity:'Medium', status:'Closed', detected:'May 18, 2025 06:15 PM', updated:'May 18, 2025 07:40 PM' },
+  ];
+
+  var severityColors = {
+    Critical: ['--red-bg','--red'], High: ['--orange-bg','--orange'],
+    Medium: ['--amber-bg','--amber'], Normal: ['--normal-bg','--normal-green']
+  };
+  var statusColors = {
+    New: ['--red-bg','--red'], 'In Progress': ['--blue-bg','--blue'],
+    Investigating: ['--amber-bg','--amber'], Closed: ['--grey-bg','--grey']
+  };
+
+  function renderEvents(){
+    var search = document.getElementById('events-search').value.toLowerCase();
+    var sevFilter = document.getElementById('events-severity-filter').value;
+    var statFilter = document.getElementById('events-status-filter').value;
+    var tbody = document.getElementById('events-table-body');
+    var filtered = eventsData.filter(function(e){
+      var matchesSearch = e.id.toLowerCase().indexOf(search) !== -1 || e.location.toLowerCase().indexOf(search) !== -1;
+      var matchesSev = !sevFilter || e.severity === sevFilter;
+      var matchesStat = !statFilter || e.status === statFilter;
+      return matchesSearch && matchesSev && matchesStat;
+    });
+    var rows = '';
+    for (var i = 0; i < filtered.length; i++){
+      var e = filtered[i];
+      var sevColors = severityColors[e.severity];
+      var statColors = statusColors[e.status];
+      rows += '<tr>'
+        + '<td class="cell-strong">' + e.id + '</td>'
+        + '<td>' + e.location + '</td>'
+        + '<td class="cell-strong">' + e.amount + '</td>'
+        + '<td><span class="badge" style="background:var(' + sevColors[0] + '); color:var(' + sevColors[1] + ')">' + e.severity + '</span></td>'
+        + '<td><span class="badge" style="background:var(' + statColors[0] + '); color:var(' + statColors[1] + ')">' + e.status + '</span></td>'
+        + '<td>' + e.detected + '</td>'
+        + '<td>' + e.updated + '</td>'
+        + '<td class="dots-btn">•••</td>'
+        + '</tr>';
+    }
+    tbody.innerHTML = rows;
+    document.getElementById('events-count-label').textContent = 'Showing ' + filtered.length + ' of ' + eventsData.length + ' events';
+  }
+  document.getElementById('events-search').addEventListener('input', renderEvents);
+  document.getElementById('events-severity-filter').addEventListener('change', renderEvents);
+  document.getElementById('events-status-filter').addEventListener('change', renderEvents);
+  renderEvents();
+
+  /* ---------- Facilities grid ---------- */
+  var facilitiesData = [
+    { name:'Fahud Field', loc:'Central Oman', events:3, equipment:24, status:'Attention', color:'red' },
+    { name:'Nimr Field', loc:'South Oman', events:1, equipment:18, status:'Attention', color:'orange' },
+    { name:'Yibal Field', loc:'North Oman', events:1, equipment:16, status:'Attention', color:'amber' },
+    { name:'Marmul Field', loc:'South Oman', events:1, equipment:12, status:'Attention', color:'amber' },
+    { name:'Qarn Alam', loc:'Central Oman', events:0, equipment:9, status:'Normal', color:'normal-green' },
+    { name:'Marmul North', loc:'South Oman', events:0, equipment:7, status:'Normal', color:'normal-green' },
+  ];
+  (function(){
+    var html = '';
+    for (var i = 0; i < facilitiesData.length; i++){
+      var f = facilitiesData[i];
+      var bgVar = (f.color === 'normal-green') ? '--normal-bg' : '--' + f.color + '-bg';
+      html += '<div class="facility-card">'
+        + '<div class="facility-card-top">'
+        + '<div><div class="facility-name">' + f.name + '</div>'
+        + '<div class="facility-loc">' + f.loc + ', Oman</div></div>'
+        + '<div class="facility-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg></div>'
+        + '</div>'
+        + '<span class="badge" style="background:var(' + bgVar + '); color:var(--' + f.color + ')">' + f.status + '</span>'
+        + '<div class="facility-stats">'
+        + '<div><div class="facility-stat-val">' + f.events + '</div><div class="facility-stat-label">Active events</div></div>'
+        + '<div><div class="facility-stat-val">' + f.equipment + '</div><div class="facility-stat-label">Equipment</div></div>'
+        + '</div></div>';
+    }
+    document.getElementById('facilities-grid').innerHTML = html;
+  })();
+
+  /* ---------- Data sources ---------- */
+  var dataSources = [
+    { name:'Satellite methane feed', desc:'Wide-area plume detection, revisited every 1-3 days', sync:'Synced 2 hrs ago', on:true },
+    { name:'Weather & wind API', desc:'Live wind speed and direction per facility', sync:'Synced 5 min ago', on:true },
+    { name:'SCADA / equipment logs', desc:'Compressor, valve, and tank activity feeds', sync:'Synced 12 min ago', on:true },
+    { name:'Facility GIS layout', desc:'Equipment coordinates and site maps', sync:'Synced yesterday', on:true },
+    { name:'Historical inspection records', desc:'Past LDAR surveys and repair logs', sync:'Synced 3 days ago', on:false },
+  ];
+  (function(){
+    var html = '';
+    for (var i = 0; i < dataSources.length; i++){
+      var d = dataSources[i];
+      html += '<div class="datasource-item">'
+        + '<div class="ds-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--umber)" stroke-width="1.8"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5V12c0 1.7 3.6 3 8 3s8-1.3 8-3V5.5"/><path d="M4 12v6.5c0 1.7 3.6 3 8 3s8-1.3 8-3V12"/></svg></div>'
+        + '<div class="ds-main"><div class="ds-name">' + d.name + '</div><div class="ds-desc">' + d.desc + '</div></div>'
+        + '<div class="ds-sync">' + d.sync + '</div>'
+        + '<div class="toggle ' + (d.on ? 'on' : '') + '" data-idx="' + i + '"><div class="toggle-knob"></div></div>'
+        + '</div>';
+    }
+    document.getElementById('datasource-list').innerHTML = html;
+  })();
+  var toggles = document.querySelectorAll('#datasource-list .toggle');
+  for (var t = 0; t < toggles.length; t++){
+    toggles[t].addEventListener('click', function(){ this.classList.toggle('on'); });
+  }
+</script>
+
+</body>
+</html>
