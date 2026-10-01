@@ -17,6 +17,13 @@ def init_db(drop: bool = False) -> None:
     if drop:
         Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
+    if is_postgres():
+        # create_all never alters existing tables; relax a constraint that older
+        # deployments created as NOT NULL.
+        with engine.begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE repair_verifications ALTER COLUMN work_order_id DROP NOT NULL"
+            ))
 
 
 if __name__ == "__main__":

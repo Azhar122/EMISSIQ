@@ -332,7 +332,9 @@ class RepairVerification(Base, SimulatedMixin):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     event_id: Mapped[str] = mapped_column(ForeignKey("methane_events.id"), index=True)
-    work_order_id: Mapped[str] = mapped_column(ForeignKey("work_orders.id"))
+    work_order_id: Mapped[str | None] = mapped_column(
+        ForeignKey("work_orders.id"), nullable=True
+    )
     verified_at: Mapped[dt.datetime] = mapped_column(UtcDateTime, default=_now)
     outcome: Mapped[str] = mapped_column(String(32))  # REPAIR VERIFIED | EMISSION STILL DETECTED
     pre_mean_ppm: Mapped[float] = mapped_column(Float)

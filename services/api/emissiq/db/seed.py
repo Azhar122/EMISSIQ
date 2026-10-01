@@ -241,6 +241,9 @@ def seed_history(db: Session, today: dt.date) -> None:
                 run_phase="historical",
             )
         )
+        # No relationship() links these tables, so the unit of work may not order
+        # the INSERTs by foreign key. Postgres enforces FKs; flush parents first.
+        db.flush()
 
         if equipment_id:
             wo_id = f"WO-{year}-{counter:04d}"
@@ -270,6 +273,7 @@ def seed_history(db: Session, today: dt.date) -> None:
                     ],
                 )
             )
+            db.flush()
             db.add(
                 RepairVerification(
                     event_id=event_id,

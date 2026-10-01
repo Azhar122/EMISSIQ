@@ -302,7 +302,7 @@ async def run_post_repair(event_id: str, speed: float = sc.DEFAULT_SPEED) -> dic
         db.add(
             RepairVerification(
                 event_id=event.id,
-                work_order_id=_find_work_order_id(db, event.id) or "",
+                work_order_id=_find_work_order_id(db, event.id),
                 outcome=result.outcome,
                 pre_mean_ppm=result.pre_mean_ppm,
                 post_mean_ppm=result.post_mean_ppm,
